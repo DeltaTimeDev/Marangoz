@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "MarangozGameMode.h"
-#include "MarangozCharacter.h"
+#include "Framework/MarangozGameMode.h"
+#include "Framework/MarangozCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 AMarangozGameMode::AMarangozGameMode()
