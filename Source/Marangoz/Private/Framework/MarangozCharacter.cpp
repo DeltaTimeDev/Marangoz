@@ -9,6 +9,8 @@
 #include "GameFramework/Controller.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Gameplay/PaintCan.h"
+#include "Gameplay/ProductActor.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AMarangozCharacter
@@ -132,17 +134,25 @@ void AMarangozCharacter::StartInteraction()
 
 	if (bHit && HitResult.GetActor())
 	{
-		UPrimitiveComponent* HitComponent = HitResult.GetComponent();
-        
-		if (HitComponent->IsSimulatingPhysics()) 
+		if (AProductActor* ProductActor = Cast<AProductActor>(HitResult.GetActor()))
 		{
-			PhysicsHandle->GrabComponentAtLocationWithRotation(
-				HitComponent,
-				NAME_None,
-				HitResult.ImpactPoint,
-				FRotator::ZeroRotator 
-			);
+			UPrimitiveComponent* HitComponent = HitResult.GetComponent();
+        
+			if (HitComponent->IsSimulatingPhysics()) 
+			{
+				PhysicsHandle->GrabComponentAtLocationWithRotation(
+					HitComponent,
+					NAME_None,
+					HitResult.ImpactPoint,
+					FRotator::ZeroRotator 
+				);
+			}
 		}
+		else if (UPaintCan* PaintCan = Cast<UPaintCan>(HitResult.GetComponent()))
+		{
+			PaintCan->SelectCan();
+		}
+
 	}
 	
 }

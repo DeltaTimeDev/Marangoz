@@ -84,4 +84,6 @@ public:
 
 	void SetProductData(FProductData InData);
 
+	void Paint(FLinearColor NewColor);
+
 };

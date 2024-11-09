@@ -48,5 +48,15 @@ void AProductActor::SetProductData(FProductData InData)
 	Data = InData;
 
 	MeshComponent->SetStaticMesh(Data.Mesh);
+	
+}
+
+void AProductActor::Paint(FLinearColor NewColor)
+{
+	UMaterialInstanceDynamic* DynamicMaterial = MeshComponent->CreateAndSetMaterialInstanceDynamic(0);
+	if (DynamicMaterial)
+	{
+		DynamicMaterial->SetVectorParameterValue("WoodColor", NewColor);
+	}
 }
 
