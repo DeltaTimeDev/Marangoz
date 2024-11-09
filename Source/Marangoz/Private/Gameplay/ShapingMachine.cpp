@@ -81,10 +81,15 @@ void AShapingMachine::SpawnProduct()
 	{
 		const FTransform SpawnTransform = MeshComponent->GetSocketTransform(SpawnSocketName);
 
-		if (AProductActor* ProductActor = GetWorld()->SpawnActorDeferred<AProductActor>(ProductClass,SpawnTransform))
+		// if (AProductActor* ProductActor = GetWorld()->SpawnActorDeferred<AProductActor>(ProductClass,SpawnTransform))
+		// {
+		// 	ProductActor->SetProductData(*CurrentSelectedProductData);
+		// 	ProductActor->FinishSpawning(SpawnTransform);
+		// }
+		if (AProductActor* ProductActor = GetWorld()->SpawnActor<AProductActor>(ProductClass,SpawnTransform))
 		{
 			ProductActor->SetProductData(*CurrentSelectedProductData);
-			ProductActor->FinishSpawning(SpawnTransform);
+			//ProductActor->FinishSpawning(SpawnTransform);
 		}
 	}
 	else

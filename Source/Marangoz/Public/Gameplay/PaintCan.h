@@ -6,7 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "PaintCan.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSelectPaintCanDelegate, UPaintCan*, SelectedPaintCan);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSelectPaintCanDelegate, FLinearColor, Color);
 
 
 /**

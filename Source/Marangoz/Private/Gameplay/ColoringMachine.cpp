@@ -4,8 +4,10 @@
 #include "Gameplay/ColoringMachine.h"
 
 #include "Components/BoxComponent.h"
+#include "Framework/MarangozPlayerController.h"
 #include "Gameplay/PaintCan.h"
 #include "Gameplay/ProductActor.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AColoringMachine::AColoringMachine()
@@ -34,6 +36,10 @@ void AColoringMachine::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+	{
+		MarangozPlayerController = Cast<AMarangozPlayerController>(PlayerController);
+	}
 	
 	RedPaintCan->SetColor(FLinearColor(1,0,0));
 	GreenPaintCan->SetColor(FLinearColor(0,1,0));
@@ -56,7 +62,21 @@ void AColoringMachine::Tick(float DeltaTime)
 
 }
 
-void AColoringMachine::OnPaintCanSelected(UPaintCan* SelectedPaintCan)
+void AColoringMachine::OnPaintCanSelected(FLinearColor Color)
+{
+	if (HasAuthority())
+	{
+		PaintProductInArea(Color);
+	}
+	else
+	{
+		MarangozPlayerController->ServerPaintProductInArea(this,Color);
+	}
+	
+
+}
+
+void AColoringMachine::PaintProductInArea(FLinearColor Color)
 {
 	TArray<AActor*> OverlappingActors;
 	PaintingArea->GetOverlappingActors(OverlappingActors);
@@ -65,7 +85,7 @@ void AColoringMachine::OnPaintCanSelected(UPaintCan* SelectedPaintCan)
 	{
 		if (AProductActor* Product = Cast<AProductActor>(OverlappingActor))
 		{
-			Product->Paint(SelectedPaintCan->Color);
+			Product->Paint(Color);
 		}
 	}
 }

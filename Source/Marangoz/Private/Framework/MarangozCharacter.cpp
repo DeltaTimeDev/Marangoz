@@ -137,6 +137,7 @@ void AMarangozCharacter::StartInteraction()
 		if (AProductActor* ProductActor = Cast<AProductActor>(HitResult.GetActor()))
 		{
 			UPrimitiveComponent* HitComponent = HitResult.GetComponent();
+			
         
 			if (HitComponent->IsSimulatingPhysics()) 
 			{

@@ -28,7 +28,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	void OnPaintCanSelected(class UPaintCan* SelectedPaintCan);
+	void OnPaintCanSelected(FLinearColor Color);
+
+	void PaintProductInArea(FLinearColor Color);
+	
 
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	UStaticMeshComponent* MeshComponent;
@@ -41,5 +44,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	UPaintCan* GreenPaintCan;
+
+	UPROPERTY()
+	class AMarangozPlayerController* MarangozPlayerController;
 
 };

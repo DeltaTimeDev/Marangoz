@@ -16,5 +16,5 @@ void UPaintCan::SetColor(FLinearColor NewColor)
 void UPaintCan::SelectCan()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Select Can"));
-	OnPaintCanSelected.Broadcast(this);
+	OnPaintCanSelected.Broadcast(Color);
 }

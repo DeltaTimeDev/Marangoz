@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Product")
 	UStaticMesh* Mesh = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Product")
+	FLinearColor Color = FLinearColor::White;
+
 	FProductData() 
 		: ID(FGuid::NewGuid()) // ID alanını otomatik oluşturuyoruz
 	{}
@@ -70,7 +73,7 @@ public:
 	FProductData Data;
 	
 	UFUNCTION()
-	void OnDataChanged(FProductData InColor);
+	void OnDataChanged(FProductData NewData);
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -84,6 +87,7 @@ public:
 
 	void SetProductData(FProductData InData);
 
+	void SetColor(FLinearColor NewColor);
 	void Paint(FLinearColor NewColor);
 
 };

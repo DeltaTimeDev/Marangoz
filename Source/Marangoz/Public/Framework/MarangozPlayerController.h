@@ -21,5 +21,7 @@ public:
 	UFUNCTION(Server,Reliable)
 	void ServerSpawnProduct(class AShapingMachine* ShapingMachine);
 
-	
+	UFUNCTION(Server,Reliable)
+	void ServerPaintProductInArea(class AColoringMachine* ColorMachine, FLinearColor Color);
+
 };

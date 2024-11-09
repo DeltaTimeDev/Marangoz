@@ -17,9 +17,10 @@ AProductActor::AProductActor()
 	bReplicates = true;
 }
 
-void AProductActor::OnDataChanged(FProductData InColor)
+void AProductActor::OnDataChanged(FProductData NewData)
 {
-	
+	MeshComponent->SetStaticMesh(Data.Mesh);
+	SetColor(Data.Color);
 }
 
 void AProductActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -33,7 +34,7 @@ void AProductActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 void AProductActor::BeginPlay()
 {
 	Super::BeginPlay();
-	SetProductData(Data);
+	//SetProductData(Data);
 }
 
 // Called every frame
@@ -46,17 +47,21 @@ void AProductActor::Tick(float DeltaTime)
 void AProductActor::SetProductData(FProductData InData)
 {
 	Data = InData;
-
-	MeshComponent->SetStaticMesh(Data.Mesh);
-	
+	OnDataChanged(Data);
 }
 
-void AProductActor::Paint(FLinearColor NewColor)
+void AProductActor::SetColor(FLinearColor NewColor)
 {
 	UMaterialInstanceDynamic* DynamicMaterial = MeshComponent->CreateAndSetMaterialInstanceDynamic(0);
 	if (DynamicMaterial)
 	{
 		DynamicMaterial->SetVectorParameterValue("WoodColor", NewColor);
 	}
+}
+
+void AProductActor::Paint(FLinearColor NewColor)
+{
+	Data.Color = NewColor;
+	OnDataChanged(Data);
 }
 
