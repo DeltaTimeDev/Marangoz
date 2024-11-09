@@ -14,7 +14,7 @@ AProductActor::AProductActor()
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	RootComponent = MeshComponent;
 
-	SetReplicates(true);
+	bReplicates = true;
 }
 
 void AProductActor::OnDataChanged(FProductData InColor)

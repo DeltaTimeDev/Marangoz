@@ -27,7 +27,7 @@ AShapingMachine::AShapingMachine()
 	ProductCatalogWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("ProductCatalogWidgetComponent"));
 	ProductCatalogWidgetComponent->SetupAttachment(WidgetHolderMeshComponent);
 
-	SetReplicates(true);
+	bReplicates = true;
 
 	// if (ProductCatalogWidgetClass)
 	// {

@@ -7,6 +7,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -40,11 +41,25 @@ AMarangozCharacter::AMarangozCharacter()
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	// Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
+}
+
+void AMarangozCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (PhysicsHandle && PhysicsHandle->GrabbedComponent)
+	{
+		FVector TargetLocation = FollowCamera->GetComponentLocation() + FollowCamera->GetForwardVector() * 200;
+		PhysicsHandle->SetTargetLocation(TargetLocation);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -59,6 +74,9 @@ void AMarangozCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMarangozCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMarangozCharacter::MoveRight);
+
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMarangozCharacter::StartInteraction);
+	PlayerInputComponent->BindAction("Interact", IE_Released, this, &AMarangozCharacter::StopInteraction);
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
@@ -90,12 +108,51 @@ void AMarangozCharacter::OnResetVR()
 
 void AMarangozCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
 {
-		Jump();
+	Jump();
 }
 
 void AMarangozCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
 {
-		StopJumping();
+	StopJumping();
+}
+
+void AMarangozCharacter::StartInteraction()
+{
+	if (!PhysicsHandle) return;
+
+	FVector Start = FollowCamera->GetComponentLocation();
+	FVector ForwardVector = FollowCamera->GetForwardVector();
+	FVector End = Start + (ForwardVector * 500.f);
+
+	FHitResult HitResult;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+
+	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, CollisionParams);
+
+	if (bHit && HitResult.GetActor())
+	{
+		UPrimitiveComponent* HitComponent = HitResult.GetComponent();
+        
+		if (HitComponent->IsSimulatingPhysics()) 
+		{
+			PhysicsHandle->GrabComponentAtLocationWithRotation(
+				HitComponent,
+				NAME_None,
+				HitResult.ImpactPoint,
+				FRotator::ZeroRotator 
+			);
+		}
+	}
+	
+}
+
+void AMarangozCharacter::StopInteraction()
+{	
+	if (PhysicsHandle && PhysicsHandle->GrabbedComponent)
+	{
+		PhysicsHandle->ReleaseComponent();
+	}
 }
 
 void AMarangozCharacter::TurnAtRate(float Rate)
@@ -126,12 +183,12 @@ void AMarangozCharacter::MoveForward(float Value)
 
 void AMarangozCharacter::MoveRight(float Value)
 {
-	if ( (Controller != nullptr) && (Value != 0.0f) )
+	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
-	
+
 		// get right vector 
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction

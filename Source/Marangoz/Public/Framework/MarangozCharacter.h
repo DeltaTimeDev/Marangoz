@@ -18,8 +18,13 @@ class AMarangozCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+
+	UPROPERTY(VisibleAnywhere)
+	class UPhysicsHandleComponent* PhysicsHandle;
 public:
 	AMarangozCharacter();
+
+	virtual void Tick(float DeltaSeconds) override;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
@@ -57,6 +62,12 @@ protected:
 
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
+
+	UFUNCTION()
+	void StartInteraction();
+
+	UFUNCTION()
+	void StopInteraction();
 
 protected:
 	// APawn interface
