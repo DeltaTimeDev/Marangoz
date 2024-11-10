@@ -6,7 +6,7 @@
 #include "Components/Border.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
-#include "Gameplay/ShapingMachine.h"
+#include "Gameplay/Machines/ShapingMachine.h"
 
 void UProductWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {

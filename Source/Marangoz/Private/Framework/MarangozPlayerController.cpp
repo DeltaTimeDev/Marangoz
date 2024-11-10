@@ -4,8 +4,8 @@
 #include "Framework/MarangozPlayerController.h"
 
 #include "Blueprint/UserWidget.h"
-#include "Gameplay/ColoringMachine.h"
-#include "Gameplay/ShapingMachine.h"
+#include "Gameplay/Machines/ColoringMachine.h"
+#include "Gameplay/Machines/ShapingMachine.h"
 #include "Gameplay/Subsystem/MoneySubsystem.h"
 #include "Widgets/MainWidget.h"
 

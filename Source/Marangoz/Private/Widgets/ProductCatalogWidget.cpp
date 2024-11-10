@@ -3,10 +3,9 @@
 
 #include "Widgets/ProductCatalogWidget.h"
 
-#include "Components/Border.h"
 #include "Components/Button.h"
 #include "Components/ListView.h"
-#include "Gameplay/ShapingMachine.h"
+#include "Gameplay/Machines/ShapingMachine.h"
 #include "Widgets/ProductWidget.h"
 
 void UProductCatalogWidget::NativeConstruct()
