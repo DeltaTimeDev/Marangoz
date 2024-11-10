@@ -97,6 +97,30 @@ void AMarangozCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 }
 
 
+
+void AMarangozCharacter::ServerRequestForGrab_Implementation(FHitResult HitResult)
+{
+	UPrimitiveComponent* HitComponent = HitResult.GetComponent();
+        
+	if (HitComponent->IsSimulatingPhysics()) 
+	{
+		PhysicsHandle->GrabComponentAtLocationWithRotation(
+			HitComponent,
+			NAME_None,
+			HitResult.ImpactPoint,
+			FRotator::ZeroRotator 
+		);
+	}
+}
+
+void AMarangozCharacter::ServerRequestForRelease_Implementation()
+{
+	if (PhysicsHandle && PhysicsHandle->GrabbedComponent)
+	{
+		PhysicsHandle->ReleaseComponent();
+	}
+}
+
 void AMarangozCharacter::OnResetVR()
 {
 	// If Marangoz is added to a project via 'Add Feature' in the Unreal Editor the dependency on HeadMountedDisplay in Marangoz.Build.cs is not automatically propagated
@@ -136,18 +160,7 @@ void AMarangozCharacter::StartInteraction()
 	{
 		if (AProductActor* ProductActor = Cast<AProductActor>(HitResult.GetActor()))
 		{
-			UPrimitiveComponent* HitComponent = HitResult.GetComponent();
-			
-        
-			if (HitComponent->IsSimulatingPhysics()) 
-			{
-				PhysicsHandle->GrabComponentAtLocationWithRotation(
-					HitComponent,
-					NAME_None,
-					HitResult.ImpactPoint,
-					FRotator::ZeroRotator 
-				);
-			}
+			ServerRequestForGrab(HitResult);
 		}
 		else if (UPaintCan* PaintCan = Cast<UPaintCan>(HitResult.GetComponent()))
 		{
@@ -160,10 +173,7 @@ void AMarangozCharacter::StartInteraction()
 
 void AMarangozCharacter::StopInteraction()
 {	
-	if (PhysicsHandle && PhysicsHandle->GrabbedComponent)
-	{
-		PhysicsHandle->ReleaseComponent();
-	}
+	ServerRequestForRelease();
 }
 
 void AMarangozCharacter::TurnAtRate(float Rate)
