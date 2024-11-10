@@ -14,7 +14,7 @@ void UProductWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 	if(Product)
 	{
 		ProductName->SetText(FText::FromString(Product->Data.Name));
-		ProductPrice->SetText(FText::AsCurrency(Product->Data.Price));
+		ProductPrice->SetText(FText::AsCurrency(Product->Data.RawMaterialCost));
 		ProductImage->SetBrushFromTexture(Product->Data.Image);
 	}
 	SetSelected(false);

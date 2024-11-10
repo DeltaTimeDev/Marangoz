@@ -15,6 +15,21 @@ class MARANGOZ_API AMarangozPlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
+	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> MainWidgetClass;
+
+	UPROPERTY()
+	class UMainWidget* MainWidgetRef;
+
+	UFUNCTION()
+	void OnMoneyChanged(int32 NewMoneyValue);
+
+
+	UFUNCTION(Client,Reliable)
+	void ClientSetMoney(int32 NewMoney);
+	
 	UFUNCTION(Server,Reliable)
 	void ServerSetProductShapingMachine(class AShapingMachine* ShapingMachine, FGuid SelectedProductID);
 

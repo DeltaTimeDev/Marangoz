@@ -6,6 +6,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "Gameplay/ProductActor.h"
+#include "Gameplay/Subsystem/MoneySubsystem.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -83,28 +84,36 @@ void AOrderActor::UpdateVisual()
 void AOrderActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (AProductActor* ProductActor = Cast<AProductActor>(OtherActor))
+
+
+	if (UMoneySubsystem* MoneySubsystem = Cast<UMoneySubsystem>(GetGameInstance()->GetSubsystem<UMoneySubsystem>()))
 	{
-		FProductData Data = ProductActor->Data;
-		if (Data.ID == Order.ID)
+		if (AProductActor* ProductActor = Cast<AProductActor>(OtherActor))
 		{
-			if (Data.Color == Order.Color)
+			FProductData Data = ProductActor->Data;
+			if (Data.ID == Order.ID)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Order type and color is correct"));
+				if (Data.Color == Order.Color)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Order type and color is correct"));
+					MoneySubsystem->Earn(Data.Price);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Order type is correct color is wrong"));
+					MoneySubsystem->Earn(Data.Price / 2);
+				}
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Order type is correct color is wrong"));
+				UE_LOG(LogTemp, Warning, TEXT("Order type is wrong"));
+				MoneySubsystem->Earn(0);
 			}
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Order type is wrong"));
-		}
 
-		ProductActor->Destroy();
-		Order.IsActive = false;
-		SetOrder(Order);
+			ProductActor->Destroy();
+			Order.IsActive = false;
+			SetOrder(Order);
+		}
 	}
 }
 

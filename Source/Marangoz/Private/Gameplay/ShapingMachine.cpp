@@ -6,9 +6,11 @@
 #include "Components/WidgetComponent.h"
 #include "Framework/MarangozPlayerController.h"
 #include "Gameplay/ProductActor.h"
+#include "Gameplay/Subsystem/MoneySubsystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Widgets/ProductCatalogWidget.h"
+#include "Gameplay/Subsystem/MoneySubsystem.h"
 
 // Sets default values
 AShapingMachine::AShapingMachine()
@@ -89,6 +91,12 @@ void AShapingMachine::SpawnProduct()
 		if (AProductActor* ProductActor = GetWorld()->SpawnActor<AProductActor>(ProductClass,SpawnTransform))
 		{
 			ProductActor->SetProductData(*CurrentSelectedProductData);
+
+			if (UMoneySubsystem* MoneySubsystem = Cast<UMoneySubsystem>(GetGameInstance()->GetSubsystem<UMoneySubsystem>()))
+			{
+				MoneySubsystem->Spend(CurrentSelectedProductData->RawMaterialCost);
+			}
+			
 			//ProductActor->FinishSpawning(SpawnTransform);
 		}
 	}

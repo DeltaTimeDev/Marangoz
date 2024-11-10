@@ -23,6 +23,9 @@ public:
 	UTexture2D* Image = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Product")
+	float RawMaterialCost = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Product")
 	float Price = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Product")
