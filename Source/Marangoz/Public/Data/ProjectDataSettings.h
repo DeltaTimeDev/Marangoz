@@ -9,9 +9,12 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(config = Game, defaultconfig)
 class MARANGOZ_API UProjectDataSettings : public UDeveloperSettings
 {
 	GENERATED_BODY()
 	
+public:
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category="Products")
+	 TSoftObjectPtr<class UProductDataAsset> Products;
 };

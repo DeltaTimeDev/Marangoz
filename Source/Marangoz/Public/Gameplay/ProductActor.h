@@ -32,7 +32,7 @@ public:
 	FLinearColor Color = FLinearColor::White;
 
 	FProductData() 
-		: ID(FGuid::NewGuid()) // ID alanını otomatik oluşturuyoruz
+		: ID(FGuid::NewGuid())
 	{}
 };
 
